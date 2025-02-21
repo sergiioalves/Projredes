@@ -1,0 +1,57 @@
+package jogo;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.*;
+
+public class Servidor {
+    private static final int PORT = 12345; 
+    private static final int MAX_JOGADORES = 4; 
+    private static List<Jogador> jogadores = new ArrayList<>();
+
+    public static void main(String[] args) {
+        System.out.println("Servidor iniciado... Aguardando jogadores...");
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            while (jogadores.size() < MAX_JOGADORES) {
+                Socket socket = serverSocket.accept(); 
+                Jogador jogador = new Jogador(socket, jogadores.size() + 1);
+                jogadores.add(jogador);
+                new Thread(jogador).start(); 
+                System.out.println("Jogador " + jogadores.size() + " conectado.");
+            }
+
+            iniciarJogo(); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void iniciarJogo() {
+        System.out.println("Todos os jogadores conectados. Iniciando o jogo...");
+        for (Jogador jogador : jogadores) {
+        	jogador.eviarMsg("Jogo iniciado! Role seu dado.");
+        }
+
+        Map<Integer, Integer> results = new HashMap<>();
+        for (Jogador jogador : jogadores) {
+            int roll = jogador.getRoll();
+            results.put(jogador.getIdJogador(), roll);
+        }
+
+        int idVencedor = AdminJogo.calcularVencedor(results);
+        for (Jogador jogador : jogadores) {
+        	jogador.eviarMsg("Resultados: " + results.toString());
+            if (jogador.getIdJogador() == idVencedor) {
+            	jogador.eviarMsg("Parabéns! Você venceu!");
+            } else {
+            	jogador.eviarMsg("Você perdeu.");
+            }
+            jogador.fecharConexão(); 
+        }
+
+        System.out.println("Jogo finalizado.");
+    }
+}
+
+

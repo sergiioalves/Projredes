@@ -28,7 +28,7 @@ Navegue até a pasta do projeto:
 
 Execute o jogo:
 
-Rodamos o servidor no terminal, e depois vamos rodando o cliente, abrindo terminal de cliente.
+No terminal coloca o comando: java nomedoarquivo.java
 
 # Como Jogar
 ## Início do Jogo:

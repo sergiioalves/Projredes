@@ -29,29 +29,25 @@ public class Servidor {
 
     private static void iniciarJogo() {
         System.out.println("Todos os jogadores conectados. Iniciando o jogo...");
+
         for (Jogador jogador : jogadores) {
-        	jogador.eviarMsg("Jogo iniciado! Role seu dado.");
+            jogador.enviarMsg("Jogo iniciado! Role seu dado.");
+            jogador.enviarMsg("ROLE_DADO");
         }
 
         Map<Integer, Integer> results = new HashMap<>();
         for (Jogador jogador : jogadores) {
-            int roll = jogador.getRoll();
-            results.put(jogador.getIdJogador(), roll);
+            jogador.aguardarRoll();
+            results.put(jogador.getIdJogador(), jogador.getRoll());
         }
 
         int idVencedor = AdminJogo.calcularVencedor(results);
         for (Jogador jogador : jogadores) {
-        	jogador.eviarMsg("Resultados: " + results.toString());
-            if (jogador.getIdJogador() == idVencedor) {
-            	jogador.eviarMsg("Parabéns! Você venceu!");
-            } else {
-            	jogador.eviarMsg("Você perdeu.");
-            }
-            jogador.fecharConexão(); 
+            jogador.enviarMsg("Resultados: " + results.toString());
+            jogador.enviarMsg(jogador.getIdJogador() == idVencedor ? "Parabéns! Você venceu!" : "Você perdeu.");
+            jogador.fecharConexão();
         }
 
         System.out.println("Jogo finalizado.");
     }
 }
-
-

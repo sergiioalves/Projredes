@@ -24,10 +24,23 @@ public class Jogador implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
+            enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde os outros jogadores.");
 
-            eviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde os outros jogadores.");
-            roll = Integer.parseInt(in.readLine());
-            System.out.println("Jogador " + idJogador + " rolou: " + roll);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void aguardarRoll() {
+        try {
+            String input;
+            while ((input = in.readLine()) != null) {
+                if (input.matches("\\d+")) {
+                    roll = Integer.parseInt(input);
+                    System.out.println("Jogador " + idJogador + " rolou: " + roll);
+                    break;
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,7 +50,7 @@ public class Jogador implements Runnable {
         return roll;
     }
 
-    public void eviarMsg(String msg) {
+    public void enviarMsg(String msg) {
         out.println(msg);
     }
 
@@ -49,4 +62,3 @@ public class Jogador implements Runnable {
         }
     }
 }
-

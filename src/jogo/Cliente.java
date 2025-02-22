@@ -16,9 +16,24 @@ public class Cliente {
 
             System.out.println("Conectado ao servidor.");
             System.out.println(in.readLine());
-            int roll = new Random().nextInt(6) + 1;
-            System.out.println("Você rolou: " + roll);
-            out.println(roll);
+
+            String msgServidor;
+            while ((msgServidor = in.readLine()) != null) {
+                System.out.println(msgServidor);
+                if (msgServidor.equals("ROLE_DADO")) {
+                    System.out.print("Pressione 'y' para rolar o dado: ");
+                    String input = consoleInput.readLine();
+                    if ("y".equalsIgnoreCase(input)) {
+                        int roll = new Random().nextInt(6) + 1;
+                        System.out.println("Você rolou: " + roll);
+                        out.println(roll);
+                    } else {
+                        System.out.println("Você não rolou o dado.");
+                    }
+                    break;
+                }
+            }
+
             System.out.println(in.readLine());
             System.out.println(in.readLine());
 
@@ -27,4 +42,3 @@ public class Cliente {
         }
     }
 }
-

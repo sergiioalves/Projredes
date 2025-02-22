@@ -11,12 +11,12 @@ O Dado de Somar é um jogo simples e divertido onde os jogadores rolam dados vir
 O objetivo é alcançar a maior pontuação possível em um número limitado de rodadas. 
 O jogo é uma ótima maneira de praticar habilidades básicas de matemática enquanto se diverte!
 
-## Como Executar o Projeto
+# Como Executar o Projeto
 
-# Pré-requisitos
+## Pré-requisitos
 Java instalado no seu computador.
 
-#Passos para Executar
+## Passos para Executar
 
 Clone o repositório:
   
@@ -27,11 +27,11 @@ Navegue até a pasta do projeto:
   <pre><font color="#12488B"><b>Projredes/src/jogo</b></font></pre>
 
 Execute o jogo:
+- Abra o termial <br>
+Para abrir o terminal na pasta no caso o powershell, clica shift e o botão direito do mouse, depois clica em abrir powershell.<br>
 
-No terminal coloca o comando: java nomedoarquivo.java
-
-# Como Jogar
-## Início do Jogo:
+## Como Jogar
+# Início do Jogo:
 
 Ao iniciar o jogo, você verá uma mensagem de boas-vindas e instruções básicas.
 

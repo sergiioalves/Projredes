@@ -30,12 +30,12 @@ Execute o jogo:
 - Abra o termial <br>
 Para abrir o terminal na pasta no caso o powershell, clica shift e o botão direito do mouse, depois clica em abrir powershell.<br>
 
-## Como Jogar
-# Início do Jogo:
+# Como Jogar
+## Início do Jogo:
 
 Ao iniciar o jogo, você verá uma mensagem de boas-vindas e instruções básicas.
 
-# Rodadas:
+## Rodadas:
 Em cada rodada, o jogador rola um dado virtual.
 
 A pontuação total é acumulada ao longo das rodadas.

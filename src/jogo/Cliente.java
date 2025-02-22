@@ -20,6 +20,7 @@ public class Cliente {
             String msgServidor;
             while ((msgServidor = in.readLine()) != null) {
                 System.out.println(msgServidor);
+
                 if (msgServidor.equals("ROLE_DADO")) {
                     System.out.print("Pressione 'y' para rolar o dado: ");
                     String input = consoleInput.readLine();
@@ -30,15 +31,20 @@ public class Cliente {
                     } else {
                         System.out.println("Você não rolou o dado.");
                     }
-                    break;
+                } else if (msgServidor.contains("Resultados") || msgServidor.contains("Parabéns") || msgServidor.contains("Você perdeu")) {
+                    System.out.println(in.readLine());
+                } else if (msgServidor.equals("Deseja jogar novamente? (s/n)")) {
+                    System.out.print("Digite 's' para continuar ou 'n' para sair: ");
+                    String input = consoleInput.readLine();
+                    out.println(input);
+                    if ("n".equalsIgnoreCase(input)) {
+                        System.out.println("Você saiu do jogo.");
+                        break;
+                    }
                 }
             }
-
-            System.out.println(in.readLine());
-            System.out.println(in.readLine());
-
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Conexão encerrada pelo servidor.");
         }
     }
 }

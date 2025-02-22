@@ -14,14 +14,26 @@ public class Servidor {
         System.out.println("Servidor iniciado... Aguardando jogadores...");
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (jogadores.size() < MAX_JOGADORES) {
-                Socket socket = serverSocket.accept(); 
+                Socket socket = serverSocket.accept();
                 Jogador jogador = new Jogador(socket, jogadores.size() + 1);
                 jogadores.add(jogador);
-                new Thread(jogador).start(); 
+                new Thread(jogador).start();
                 System.out.println("Jogador " + jogadores.size() + " conectado.");
             }
 
-            iniciarJogo(); 
+            while (jogadores.size() >= 2) {
+                iniciarJogo();
+                jogadores = perguntarNovaRodada();
+            }
+
+            if (jogadores.size() < 2) {
+                for (Jogador jogador : jogadores) {
+                    jogador.enviarMsg("Jogadores insuficientes para continuar. O jogo será encerrado.");
+                    jogador.fecharConexão();
+                }
+            }
+            
+            System.out.println("Todos os jogadores saíram. Servidor encerrado.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,9 +57,21 @@ public class Servidor {
         for (Jogador jogador : jogadores) {
             jogador.enviarMsg("Resultados: " + results.toString());
             jogador.enviarMsg(jogador.getIdJogador() == idVencedor ? "Parabéns! Você venceu!" : "Você perdeu.");
-            jogador.fecharConexão();
         }
 
         System.out.println("Jogo finalizado.");
+    }
+
+    private static List<Jogador> perguntarNovaRodada() {
+        List<Jogador> jogadoresRestantes = new ArrayList<>();
+        for (Jogador jogador : jogadores) {
+            jogador.enviarMsg("Deseja jogar novamente? (s/n)");
+            if (jogador.aguardarContinuar()) {
+                jogadoresRestantes.add(jogador);
+            } else {
+                jogador.fecharConexão();
+            }
+        }
+        return jogadoresRestantes;
     }
 }

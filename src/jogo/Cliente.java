@@ -15,36 +15,44 @@ public class Cliente {
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
 
             System.out.println("Conectado ao servidor.");
-            System.out.println(in.readLine());
 
-            String msgServidor;
-            while ((msgServidor = in.readLine()) != null) {
-                System.out.println(msgServidor);
+            String mensagemServidor;
+            while ((mensagemServidor = in.readLine()) != null) {
+                System.out.println(mensagemServidor);
 
-                if (msgServidor.equals("ROLE_DADO")) {
-                    System.out.print("Pressione 'y' para rolar o dado: ");
-                    String input = consoleInput.readLine();
-                    if ("y".equalsIgnoreCase(input)) {
-                        int roll = new Random().nextInt(6) + 1;
-                        System.out.println("Você rolou: " + roll);
-                        out.println(roll);
+                if (mensagemServidor.contains("Digite 's' para jogar novamente ou 'n' para sair:")) {
+                    String resposta;
+                    do {
+                        System.out.print("> ");
+                        resposta = consoleInput.readLine().trim().toLowerCase();
+                        if (!resposta.equals("s") && !resposta.equals("n")) {
+                            System.out.println("Entrada inválida. Digite 's' ou 'n'.");
+                        }
+                    } while (!resposta.equals("s") && !resposta.equals("n"));
+                
+                    out.println(resposta);
+                
+                    if (resposta.equals("s")) {
+                        String aguardando = in.readLine();
+                        System.out.println(aguardando);
                     } else {
-                        System.out.println("Você não rolou o dado.");
+                        String saida = in.readLine();
+                        System.out.println(saida);
+                        System.exit(0);
                     }
-                } else if (msgServidor.contains("Resultados") || msgServidor.contains("Parabéns") || msgServidor.contains("Você perdeu")) {
-                    System.out.println(in.readLine());
-                } else if (msgServidor.equals("Deseja jogar novamente? (s/n)")) {
-                    System.out.print("Digite 's' para continuar ou 'n' para sair: ");
-                    String input = consoleInput.readLine();
-                    out.println(input);
-                    if ("n".equalsIgnoreCase(input)) {
-                        System.out.println("Você saiu do jogo.");
-                        break;
+                } else if (mensagemServidor.contains("Role seu dado")) {
+                    System.out.println("Pressione 'y' para rolar o dado:");
+                    while (!consoleInput.readLine().trim().equalsIgnoreCase("y")) {
+                        System.out.println("Pressione apenas 'y' para rolar o dado:");
+                        Thread.sleep(100); 
                     }
+                    int roll = new Random().nextInt(6) + 1;
+                    System.out.println("Você rolou: " + roll);
+                    out.println(roll);
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Conexão encerrada pelo servidor.");
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

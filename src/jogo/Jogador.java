@@ -24,6 +24,7 @@ public class Jogador implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
+
             enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde os outros jogadores.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,33 +33,11 @@ public class Jogador implements Runnable {
 
     public void aguardarRoll() {
         try {
-            String input;
-            while ((input = in.readLine()) != null) {
-                if (input.matches("\\d+")) {
-                    roll = Integer.parseInt(input);
-                    System.out.println("Jogador " + idJogador + " rolou: " + roll);
-                    break;
-                }
-            }
+            roll = Integer.parseInt(in.readLine());
+            System.out.println("Jogador " + idJogador + " rolou: " + roll);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean aguardarContinuar() {
-        try {
-            String input;
-            while ((input = in.readLine()) != null) {
-                if (input.equalsIgnoreCase("s")) {
-                    return true;
-                } else if (input.equalsIgnoreCase("n")) {
-                    return false;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public int getRoll() {
@@ -69,10 +48,22 @@ public class Jogador implements Runnable {
         out.println(msg);
     }
 
-    public void fecharConexão() {
+    public String receberMsg() {
+        try {
+            return in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void zerarPontos() {
+        roll = 0;
+    }
+
+    public void fecharConexao() {
         try {
             socket.close();
-            System.out.println("Jogador " + idJogador + " desconectado.");
         } catch (IOException e) {
             e.printStackTrace();
         }

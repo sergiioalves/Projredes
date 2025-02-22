@@ -6,8 +6,9 @@ import java.net.Socket;
 import java.util.*;
 
 public class Servidor {
-    private static final int PORT = 12345; 
-    private static final int MAX_JOGADORES = 4; 
+    private static final int PORT = 12345;
+    private static final int MAX_JOGADORES = 4;
+    private static final int MIN_JOGADORES = 2;
     private static List<Jogador> jogadores = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -21,19 +22,7 @@ public class Servidor {
                 System.out.println("Jogador " + jogadores.size() + " conectado.");
             }
 
-            while (jogadores.size() >= 2) {
-                iniciarJogo();
-                jogadores = perguntarNovaRodada();
-            }
-
-            if (jogadores.size() < 2) {
-                for (Jogador jogador : jogadores) {
-                    jogador.enviarMsg("Jogadores insuficientes para continuar. O jogo será encerrado.");
-                    jogador.fecharConexão();
-                }
-            }
-            
-            System.out.println("Todos os jogadores saíram. Servidor encerrado.");
+            iniciarJogo();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,36 +31,86 @@ public class Servidor {
     private static void iniciarJogo() {
         System.out.println("Todos os jogadores conectados. Iniciando o jogo...");
 
+        do {
+            for (Jogador jogador : jogadores) {
+                jogador.zerarPontos();
+            }
+
+            Map<Integer, Integer> resultadosFinais = new HashMap<>();
+            for (Jogador jogador : jogadores) {
+                resultadosFinais.put(jogador.getIdJogador(), 0);
+            }
+
+            for (int rodada = 1; rodada <= 3; rodada++) {
+                System.out.println("\n--- Rodada " + rodada + " ---");
+                for (Jogador jogador : jogadores) {
+                    jogador.enviarMsg("Rodada " + rodada + "! Role seu dado (aperte 'y').");
+                }
+
+                Map<Integer, Integer> resultadosRodada = new HashMap<>();
+                for (Jogador jogador : jogadores) {
+                    jogador.aguardarRoll();
+                    int total = resultadosFinais.get(jogador.getIdJogador()) + jogador.getRoll();
+                    resultadosFinais.put(jogador.getIdJogador(), total);
+                    resultadosRodada.put(jogador.getIdJogador(), jogador.getRoll());
+                }
+
+                for (Jogador jogador : jogadores) {
+                    jogador.enviarMsg("Resultado da rodada: " + resultadosRodada);
+                    jogador.enviarMsg("Seu total acumulado: " + resultadosFinais.get(jogador.getIdJogador()));
+                }
+            }
+
+            int idVencedor = AdminJogo.calcularVencedor(resultadosFinais);
+            for (Jogador jogador : jogadores) {
+                jogador.enviarMsg("\nResultados finais: " + resultadosFinais);
+                if (jogador.getIdJogador() == idVencedor) {
+                    jogador.enviarMsg("Parabéns! Você venceu!");
+                } else {
+                    jogador.enviarMsg("Você perdeu.");
+                }
+            }
+
+        } while (aguardarNovaPartida());
+
         for (Jogador jogador : jogadores) {
-            jogador.enviarMsg("Jogo iniciado! Role seu dado.");
-            jogador.enviarMsg("ROLE_DADO");
+            jogador.fecharConexao();
         }
 
-        Map<Integer, Integer> results = new HashMap<>();
-        for (Jogador jogador : jogadores) {
-            jogador.aguardarRoll();
-            results.put(jogador.getIdJogador(), jogador.getRoll());
-        }
+        System.out.println("Jogo encerrado.");
+    }
+    
+    private static boolean aguardarNovaPartida() {
+    List<Jogador> jogadoresConfirmados = new ArrayList<>();
 
-        int idVencedor = AdminJogo.calcularVencedor(results);
-        for (Jogador jogador : jogadores) {
-            jogador.enviarMsg("Resultados: " + results.toString());
-            jogador.enviarMsg(jogador.getIdJogador() == idVencedor ? "Parabéns! Você venceu!" : "Você perdeu.");
-        }
+    System.out.println("\nAguardando decisão dos jogadores para nova partida...");
 
-        System.out.println("Jogo finalizado.");
+    for (Jogador jogador : jogadores) {
+        jogador.enviarMsg("Digite 's' para jogar novamente ou 'n' para sair:");
     }
 
-    private static List<Jogador> perguntarNovaRodada() {
-        List<Jogador> jogadoresRestantes = new ArrayList<>();
-        for (Jogador jogador : jogadores) {
-            jogador.enviarMsg("Deseja jogar novamente? (s/n)");
-            if (jogador.aguardarContinuar()) {
-                jogadoresRestantes.add(jogador);
-            } else {
-                jogador.fecharConexão();
+    Iterator<Jogador> iterator = jogadores.iterator();
+    while (iterator.hasNext()) {
+        Jogador jogador = iterator.next();
+        String resposta = jogador.receberMsg();
+
+        if (resposta != null) {
+            System.out.println("Jogador " + jogador.getIdJogador() + " respondeu: " + resposta);
+            if (resposta.equalsIgnoreCase("s")) {
+                jogador.enviarMsg("Aguardando outros jogadores...");
+                jogadoresConfirmados.add(jogador);
+            } else if (resposta.equalsIgnoreCase("n")) {
+                jogador.enviarMsg("Você saiu do jogo.");
+                System.out.println("Jogador " + jogador.getIdJogador() + " saiu do jogo.");
+                jogador.fecharConexao();
+                iterator.remove();
             }
         }
-        return jogadoresRestantes;
     }
+
+    jogadores = jogadoresConfirmados;
+    System.out.println("Jogadores que continuam: " + jogadores.size());
+
+    return jogadores.size() >= MIN_JOGADORES;
+}
 }

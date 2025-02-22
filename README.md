@@ -1,5 +1,9 @@
 # Dado de Somar
 
+<div>
+<img src="https://github.com/user-attachments/assets/13060b7a-90f6-4313-bd0e-bb790e2ad46d" width="250px" />
+</div>
+
 ## Integrantes do grupo
 - Sergio
 - Denilson

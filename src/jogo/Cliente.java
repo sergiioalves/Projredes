@@ -19,7 +19,7 @@ public class Cliente {
             while ((mensagemServidor = in.readLine()) != null) {
                 System.out.println(mensagemServidor);
 
-                if (mensagemServidor.contains("Digite 's' para jogar novamente ou 'n' para sair:")) {
+                if (mensagemServidor.contains("Deseja iniciar o jogo? (s/n)")) {
                     String resposta;
                     do {
                         System.out.print("> ");
@@ -28,9 +28,22 @@ public class Cliente {
                             System.out.println("Entrada inválida. Digite 's' ou 'n'.");
                         }
                     } while (!resposta.equals("s") && !resposta.equals("n"));
-                
+
                     out.println(resposta);
-                
+                }
+
+                else if (mensagemServidor.contains("Digite 's' para jogar novamente ou 'n' para sair:")) {
+                    String resposta;
+                    do {
+                        System.out.print("> ");
+                        resposta = consoleInput.readLine().trim().toLowerCase();
+                        if (!resposta.equals("s") && !resposta.equals("n")) {
+                            System.out.println("Entrada inválida. Digite 's' ou 'n'.");
+                        }
+                    } while (!resposta.equals("s") && !resposta.equals("n"));
+
+                    out.println(resposta);
+
                     if (resposta.equals("s")) {
                         String aguardando = in.readLine();
                         System.out.println(aguardando);
@@ -39,7 +52,21 @@ public class Cliente {
                         System.out.println(saida);
                         System.exit(0);
                     }
-                } else if (mensagemServidor.contains("Pressione 'y' para rolar o dado.")) {
+                }
+
+                else if (mensagemServidor.contains("Role seu dado")) {
+                    System.out.println("Pressione 'y' para rolar o dado:");
+                    while (!consoleInput.readLine().trim().equalsIgnoreCase("y")) {
+                        System.out.println("Pressione apenas 'y' para rolar o dado:");
+                        try {
+                            Thread.sleep(100); 
+                        } catch (InterruptedException e) {
+                            System.err.println("Erro ao aguardar a entrada: " + e.getMessage());
+                        }
+                    }
+                }
+
+                else if (mensagemServidor.contains("Pressione 'y' para rolar o dado.")) {
                     String respostaRoll;
                     while (true) {
                         respostaRoll = consoleInput.readLine().trim();

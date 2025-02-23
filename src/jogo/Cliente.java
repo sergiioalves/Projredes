@@ -2,7 +2,6 @@ package jogo;
 
 import java.io.*;
 import java.net.*;
-import java.util.Random;
 
 public class Cliente {
     private static final String SERVER_IP = "127.0.0.1";
@@ -40,18 +39,21 @@ public class Cliente {
                         System.out.println(saida);
                         System.exit(0);
                     }
-                } else if (mensagemServidor.contains("Role seu dado")) {
-                    System.out.println("Pressione 'y' para rolar o dado:");
-                    while (!consoleInput.readLine().trim().equalsIgnoreCase("y")) {
+                } else if (mensagemServidor.contains("Pressione 'y' para rolar o dado.")) {
+                    String respostaRoll;
+                    while (true) {
+                        respostaRoll = consoleInput.readLine().trim();
+                        System.out.println("Entrada recebida: " + respostaRoll);
+                        if (respostaRoll.equalsIgnoreCase("y")) {
+                            break;
+                        }
                         System.out.println("Pressione apenas 'y' para rolar o dado:");
-                        Thread.sleep(100); 
                     }
-                    int roll = new Random().nextInt(6) + 1;
-                    System.out.println("Você rolou: " + roll);
-                    out.println(roll);
+                    out.println("y");
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            System.err.println("Erro no cliente: " + e.getMessage());
             e.printStackTrace();
         }
     }

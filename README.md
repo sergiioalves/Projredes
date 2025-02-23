@@ -31,7 +31,7 @@ Navegue até a pasta do projeto:
   <pre><font color="#12488B"><b>Projredes/src/jogo</b></font></pre>
 
 Execute o jogo:
-- Abra o termial <br>
+- Abra o terminal <br>
 Para abrir o terminal na pasta no caso o powershell, clica shift e o botão direito do mouse, depois clica em abrir powershell.<br>
 
 # Como Jogar
@@ -47,11 +47,11 @@ A pontuação total é acumulada ao longo das rodadas.
 
 # Objetivo:
 
-O objetivo é obter a maior pontuação possível em um número 3 rodasa
+O objetivo é obter a maior pontuação possível em um número 3 rodadas
 
 # Final do Jogo:
 
-Após todas as rodadas, o jogo exibe a pontuação final.
+Após todas as rodadas, o jogo exibe a pontuação final e informa o se o jogador ganhou ou perdeu.
 
 O jogador pode decidir jogar novamente ou encerrar o jogo.
 

@@ -7,6 +7,7 @@ import java.util.*;
 
 public class Servidor {
     private static final int PORT = 12345;
+    private static ServerSocket serverSocket;
     private static final int MAX_JOGADORES = 4;
     private static final int MIN_JOGADORES = 2;
     private static List<Jogador> jogadores = new ArrayList<>();
@@ -15,135 +16,141 @@ public class Servidor {
         System.out.println("Servidor iniciado... Aguardando jogadores...");
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
-                while (jogadores.size() < MAX_JOGADORES) {
-                    try {
-                        Socket socket = serverSocket.accept();
-                        Jogador jogador = new Jogador(socket, jogadores.size() + 1);
-                        jogadores.add(jogador);
-                        new Thread(jogador).start();
-                        System.out.println("Jogador " + jogadores.size() + " conectado.");
 
-                        if (jogadores.size() >= MIN_JOGADORES && confirmarInicio()) {
-                            iniciarJogo();
-                        }
-                    } catch (IOException e) {
-                        System.err.println("Erro ao aceitar conexão: " + e.getMessage());
-                    }
+                while (jogadores.size() < MAX_JOGADORES) {
+                    Socket socket = serverSocket.accept();
+                    Jogador novoJogador = new Jogador(socket, jogadores.size() + 1);
+                    jogadores.add(novoJogador);
+                    new Thread(novoJogador).start();
+                    System.out.println("Jogador " + novoJogador.getIdJogador() + " conectado.");
+                    novoJogador.enviarMsg("Aguardando outros jogadores...");
+                }
+    
+                if (confirmarInicio()) {
+                    iniciarJogo();
+                } else {
+                    System.out.println("Não há jogadores suficientes. Reiniciando...");
+                    jogadores.forEach(Jogador::fecharConexao);
+                    jogadores.clear();
                 }
             }
-
         } catch (IOException e) {
             System.err.println("Erro no servidor: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     private static boolean confirmarInicio() {
-        System.out.println("Verificando se jogadores desejam iniciar a partida...");
-        for (Jogador jogador : jogadores) {
-            jogador.enviarMsg("Temos " + jogadores.size() + " jogadores. Deseja iniciar? (s/n)");
-        }
-
-        for (Jogador jogador : jogadores) {
-            String resposta = jogador.receberMsg();
-            if (!"s".equalsIgnoreCase(resposta)) {
-                System.out.println("Jogador " + jogador.getIdJogador() + " não deseja iniciar. Aguardando mais jogadores...");
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void iniciarJogo() {
-        System.out.println("Iniciando o jogo...");
-
-        System.out.println("Todos os jogadores conectados. Iniciando o jogo...");
-        do {
-            for (Jogador jogador : jogadores) {
-                jogador.zerarPontos();
-            }
-
-            Map<Integer, Integer> resultadosFinais = new HashMap<>();
-            for (Jogador jogador : jogadores) {
-                resultadosFinais.put(jogador.getIdJogador(), 0);
-            }
-
-            for (int rodada = 1; rodada <= 3; rodada++) {
-                System.out.println("\n--- Rodada " + rodada + " ---");
-
-                for (int i = 0; i < jogadores.size(); i++) {
-                    Jogador jogadorAtual = jogadores.get(i);
-
-                    for (Jogador jogador : jogadores) {
-                        if (jogador == jogadorAtual) {
-                            jogador.enviarMsg("Sua vez! Pressione 'y' para rolar o dado.");
-                        } else {
-                            jogador.enviarMsg("Aguarde o jogador " + jogadorAtual.getIdJogador() + " rolar o dado.");
-                        }
-                    }
-
-                    jogadorAtual.aguardarRoll();
-                    int total = resultadosFinais.get(jogadorAtual.getIdJogador()) + jogadorAtual.getRoll();
-                    resultadosFinais.put(jogadorAtual.getIdJogador(), total);
-                }
-
-                for (Jogador jogador : jogadores) {
-                    jogador.enviarMsg("Resultado da rodada: " + resultadosFinais);
-                }
-            }
-
-            int idVencedor = AdminJogo.calcularVencedor(resultadosFinais);
-            for (Jogador jogador : jogadores) {
-                jogador.enviarMsg("\nResultados finais: " + resultadosFinais);
-                jogador.enviarMsg(jogador.getIdJogador() == idVencedor ? "Parabéns! Você venceu!" : "Você perdeu.");
-            }
-
-        } while (aguardarNovaPartida());
-
-        for (Jogador jogador : jogadores) {
-            jogador.fecharConexao();
-        }
-
-        System.out.println("Jogo encerrado.");
-    }
-
-    private static boolean aguardarNovaPartida() {
-        List<Jogador> jogadoresConfirmados = new ArrayList<>();
-
-        System.out.println("\nAguardando decisão dos jogadores para nova partida...");
-        for (Jogador jogador : jogadores) {
-            jogador.enviarMsg("Digite 's' para jogar novamente ou 'n' para sair:");
-        }
-
+        System.out.println("Confirmando início com " + jogadores.size() + " jogadores...");
         Iterator<Jogador> iterator = jogadores.iterator();
+        
         while (iterator.hasNext()) {
             Jogador jogador = iterator.next();
+            jogador.enviarMsg("Deseja iniciar o jogo? (s/n)");
             String resposta = jogador.receberMsg();
-            if ("s".equalsIgnoreCase(resposta)) {
-                jogadoresConfirmados.add(jogador);
-            } else {
-                jogador.enviarMsg("Você saiu do jogo.");
+            
+            if (!"s".equalsIgnoreCase(resposta)) {
+                System.out.println("Jogador " + jogador.getIdJogador() + " recusou. Desconectando...");
+                jogador.enviarMsg("Você foi desconectado da partida.");
                 jogador.fecharConexao();
                 iterator.remove();
             }
         }
+    
+        for (int i = 0; i < jogadores.size(); i++) {
+            jogadores.get(i).setIdJogador(i + 1);
+        }
+    
+        System.out.println("Jogadores confirmados: " + jogadores.size());
+        return jogadores.size() >= MIN_JOGADORES;
+    }
 
-        jogadores = jogadoresConfirmados;
-        System.out.println("Jogadores que continuam: " + jogadores.size());
+    private static void iniciarJogo() {
+        do {
+            System.out.println("Iniciando jogo com " + jogadores.size() + " jogadores!");
+            Map<Integer, Integer> resultados = new HashMap<>();
+            
+            for (Jogador j : jogadores) {
+                j.zerarPontos();
+                resultados.put(j.getIdJogador(), 0);
+            }
+    
+            for (int rodada = 1; rodada <= 3; rodada++) {
+                for (Jogador atual : jogadores) {
+                    for (Jogador j : jogadores) {
+                        if (j == atual) {
+                            j.enviarMsg("Sua vez! Pressione 'y' para rolar.");
+                        } else {
+                            j.enviarMsg("Aguarde o Jogador " + atual.getIdJogador() + ".");
+                        }
+                    }
+                    
+                    atual.aguardarRoll();
+                    resultados.put(atual.getIdJogador(), resultados.get(atual.getIdJogador()) + atual.getRoll());
+                    
+                    for (Jogador j : jogadores) {
+                        j.enviarMsg("Jogador " + atual.getIdJogador() + " rolou " + atual.getRoll());
+                    }
+                }
+            }
+            
+            int idVencedor = AdminJogo.calcularVencedor(resultados);
+            for (Jogador j : jogadores) {
+                j.enviarMsg("\n=== RESULTADO FINAL ===");
+                j.enviarMsg("Pontuações: " + resultados);
+                if (j.getIdJogador() == idVencedor) {
+                    j.enviarMsg("VOCÊ VENCEU! \\o/");
+                } else {
+                    j.enviarMsg("Você perdeu. Tente novamente!");
+                }
+            }
+        } while (aguardarNovaPartida());
+    }
 
-        while (jogadores.size() < MIN_JOGADORES) {
-            System.out.println("Aguardando mais jogadores para iniciar nova partida...");
-            try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-                Socket socket = serverSocket.accept();
-                Jogador novoJogador = new Jogador(socket, jogadores.size() + 1);
-                jogadores.add(novoJogador);
-                new Thread(novoJogador).start();
-                System.out.println("Novo jogador conectado. Total de jogadores: " + jogadores.size());
-            } catch (IOException e) {
-                e.printStackTrace();
+    private static boolean aguardarNovaPartida() {
+        List<Jogador> jogadoresConfirmados = new ArrayList<>();
+    
+        for (Jogador jogador : jogadores) {
+            jogador.enviarMsg("Digite 's' para jogar novamente ou 'n' para sair:");
+        }
+    
+        Iterator<Jogador> iterator = jogadores.iterator();
+        while (iterator.hasNext()) {
+            Jogador jogador = iterator.next();
+            String resposta = jogador.receberMsg();
+            if (resposta != null && "s".equalsIgnoreCase(resposta)) {
+                jogadoresConfirmados.add(jogador);
+                jogador.enviarMsg("Aguardando confirmação de outros jogadores...");
+            } else {
+                System.out.println("Jogador " + jogador.getIdJogador() + " saiu do jogo.");
+                jogador.enviarMsg("Conexão encerrada.");
+                jogador.fecharConexao();
+                iterator.remove();
             }
         }
-
-        return true;
+    
+        jogadores = jogadoresConfirmados;
+        System.out.println("Jogadores que permaneceram: " + jogadores.size());
+    
+        if (jogadores.size() < MIN_JOGADORES) {
+            System.out.println("Aguardando novos jogadores...");
+            try {
+                while (jogadores.size() < MAX_JOGADORES) {
+                    Socket socket = serverSocket.accept();
+                    Jogador novoJogador = new Jogador(socket, jogadores.size() + 1);
+                    jogadores.add(novoJogador);
+                    new Thread(novoJogador).start();
+                    System.out.println("Novo jogador " + novoJogador.getIdJogador() + " conectado.");
+                    
+                    if (jogadores.size() >= MIN_JOGADORES) {
+                        return confirmarInicio();
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Erro ao aceitar nova conexão: " + e.getMessage());
+                return false;
+            }
+        }
+        
+        return confirmarInicio();
     }
 }

@@ -28,7 +28,7 @@ public class Cliente {
                             System.out.println("Entrada inválida. Digite 's' ou 'n'.");
                         }
                     } while (!resposta.equals("s") && !resposta.equals("n"));
-
+                
                     out.println(resposta);
                 }
 
@@ -54,28 +54,16 @@ public class Cliente {
                     }
                 }
 
-                else if (mensagemServidor.contains("Role seu dado")) {
-                    System.out.println("Pressione 'y' para rolar o dado:");
-                    while (!consoleInput.readLine().trim().equalsIgnoreCase("y")) {
-                        System.out.println("Pressione apenas 'y' para rolar o dado:");
-                        try {
-                            Thread.sleep(100); 
-                        } catch (InterruptedException e) {
-                            System.err.println("Erro ao aguardar a entrada: " + e.getMessage());
+                else if (mensagemServidor.contains("Sua vez! Pressione 'y' para rolar.")) {
+                    String resposta;
+                    do {
+                        System.out.print("> ");
+                        resposta = consoleInput.readLine().trim().toLowerCase();
+                        if (!resposta.equals("y")) {
+                            System.out.println("Pressione apenas 'y' para rolar o dado:");
                         }
-                    }
-                }
-
-                else if (mensagemServidor.contains("Pressione 'y' para rolar o dado.")) {
-                    String respostaRoll;
-                    while (true) {
-                        respostaRoll = consoleInput.readLine().trim();
-                        System.out.println("Entrada recebida: " + respostaRoll);
-                        if (respostaRoll.equalsIgnoreCase("y")) {
-                            break;
-                        }
-                        System.out.println("Pressione apenas 'y' para rolar o dado:");
-                    }
+                    } while (!resposta.equals("y"));
+                    
                     out.println("y");
                 }
             }

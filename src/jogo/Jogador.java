@@ -14,18 +14,9 @@ public class Jogador implements Runnable {
     public Jogador(Socket socket, int idJogador) {
         this.socket = socket;
         this.idJogador = idJogador;
-    }
-
-    public int getIdJogador() {
-        return idJogador;
-    }
-
-    @Override
-    public void run() {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde os outros jogadores.");
         } catch (IOException e) {
             System.err.println("Erro ao configurar E/S para jogador " + idJogador + ": " + e.getMessage());
             e.printStackTrace();
@@ -33,11 +24,27 @@ public class Jogador implements Runnable {
         }
     }
 
+    public int getIdJogador() {
+        return idJogador;
+    }
+    
+    public void setIdJogador(int novo) {
+        this.idJogador = novo;
+    }
+
+    public boolean estaConectado() {
+        return socket != null && !socket.isClosed() && socket.isConnected();
+    }
+
+    @Override
+    public void run() {
+        enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde os outros jogadores.");
+    }
+
     public void aguardarRoll() {
-        
         String resposta = receberMsg();
         while (!"y".equalsIgnoreCase(resposta)) {
-            enviarMsg("Pressione apenas 'y' para rolar o dado:");
+            enviarMsg("Sua vez! Pressione 'y' para rolar.");
             resposta = receberMsg();
         }
     
@@ -56,7 +63,11 @@ public class Jogador implements Runnable {
     }
 
     public void enviarMsg(String msg) {
-        out.println(msg);
+        if (out != null) {
+            out.println(msg);
+        } else {
+            System.err.println("Erro: PrintWriter não inicializado para jogador " + idJogador);
+        }
     }
 
     public String receberMsg() {
@@ -71,12 +82,15 @@ public class Jogador implements Runnable {
     }
 
     public void zerarPontos() {
-        roll = 0;
+        this.roll = 0;
+        this.out.flush();
     }
 
     public void fecharConexao() {
         try {
-            socket.close();
+            if (out != null) out.close();
+            if (in != null) in.close();
+            if (socket != null) socket.close();
         } catch (IOException e) {
             System.err.println("Erro ao fechar conexão do jogador " + idJogador + ": " + e.getMessage());
             e.printStackTrace();

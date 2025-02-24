@@ -25,7 +25,6 @@ public class Servidor {
                     jogadores.add(novoJogador);
                     new Thread(novoJogador).start();
                     System.out.println("Jogador " + novoJogador.getIdJogador() + " conectado.");
-                    novoJogador.enviarMsg("Aguardando outros jogadores...");
                 }
 
                 if (confirmarInicio()) {

@@ -38,7 +38,11 @@ public class Jogador implements Runnable {
 
     @Override
     public void run() {
-        enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde os outros jogadores.");
+        if (idJogador == 4) {
+            enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguarde a confirmação dos outros para começar.");
+        } else {
+            enviarMsg("Bem-vindo, Jogador " + idJogador + "! Aguardando outros jogadores...");
+        }
     }
 
     public void aguardarRoll() {

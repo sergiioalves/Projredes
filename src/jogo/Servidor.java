@@ -14,9 +14,11 @@ public class Servidor {
 
     public static void main(String[] args) {
         System.out.println("Servidor iniciado... Aguardando jogadores...");
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            while (true) {
+        
+        try {
+            serverSocket = new ServerSocket(PORT); 
 
+            while (true) {
                 while (jogadores.size() < MAX_JOGADORES) {
                     Socket socket = serverSocket.accept();
                     Jogador novoJogador = new Jogador(socket, jogadores.size() + 1);
@@ -25,7 +27,7 @@ public class Servidor {
                     System.out.println("Jogador " + novoJogador.getIdJogador() + " conectado.");
                     novoJogador.enviarMsg("Aguardando outros jogadores...");
                 }
-    
+
                 if (confirmarInicio()) {
                     iniciarJogo();
                 } else {
@@ -108,16 +110,16 @@ public class Servidor {
 
     private static boolean aguardarNovaPartida() {
         List<Jogador> jogadoresConfirmados = new ArrayList<>();
-    
+
         for (Jogador jogador : jogadores) {
             jogador.enviarMsg("Digite 's' para jogar novamente ou 'n' para sair:");
         }
-    
+
         Iterator<Jogador> iterator = jogadores.iterator();
         while (iterator.hasNext()) {
             Jogador jogador = iterator.next();
             String resposta = jogador.receberMsg();
-            if (resposta != null && "s".equalsIgnoreCase(resposta)) {
+            if ("s".equalsIgnoreCase(resposta)) {
                 jogadoresConfirmados.add(jogador);
                 jogador.enviarMsg("Aguardando confirmação de outros jogadores...");
             } else {
@@ -127,30 +129,27 @@ public class Servidor {
                 iterator.remove();
             }
         }
-    
+
         jogadores = jogadoresConfirmados;
+
         System.out.println("Jogadores que permaneceram: " + jogadores.size());
-    
-        if (jogadores.size() < MIN_JOGADORES) {
-            System.out.println("Aguardando novos jogadores...");
-            try {
-                while (jogadores.size() < MAX_JOGADORES) {
-                    Socket socket = serverSocket.accept();
-                    Jogador novoJogador = new Jogador(socket, jogadores.size() + 1);
-                    jogadores.add(novoJogador);
-                    new Thread(novoJogador).start();
-                    System.out.println("Novo jogador " + novoJogador.getIdJogador() + " conectado.");
-                    
-                    if (jogadores.size() >= MIN_JOGADORES) {
-                        return confirmarInicio();
-                    }
-                }
-            } catch (IOException e) {
-                System.err.println("Erro ao aceitar nova conexão: " + e.getMessage());
-                return false;
+
+        try {
+            while (jogadores.size() < MAX_JOGADORES) {
+                System.out.println("Aguardando novos jogadores...");
+                Socket socket = serverSocket.accept(); 
+                Jogador novoJogador = new Jogador(socket, jogadores.size() + 1);
+                jogadores.add(novoJogador);
+                new Thread(novoJogador).start();
+                System.out.println("Novo jogador " + novoJogador.getIdJogador() + " conectado.");
+                novoJogador.enviarMsg("Aguardando outros jogadores...");
             }
+        } catch (IOException e) {
+            System.err.println("Erro ao aceitar nova conexão: " + e.getMessage());
+            return false;
         }
-        
-        return confirmarInicio();
+
+        return jogadores.size() >= MIN_JOGADORES && confirmarInicio();
     }
+
 }

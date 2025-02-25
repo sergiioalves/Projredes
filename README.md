@@ -5,15 +5,13 @@
 </div>
 
 ## Integrantes do grupo
-- Sergio
+- Sérgio
 - Denilson
 - Lindembergson
   
 ## Descrição do Jogo
 
-O Dado de Somar é um jogo simples e divertido onde os jogadores rolam dados virtuais e somam os valores obtidos. 
-O objetivo é alcançar a maior pontuação possível em um número limitado de rodadas. 
-O jogo é uma ótima maneira de praticar habilidades básicas de matemática enquanto se diverte!
+Dado de Somar é um jogo simples onde os jogadores rolam dados virtuais e somam os valores obtidos buscando alcançar a maior pontuação possível em um número limitado de rodadas. 
 
 # Como Executar o Projeto
 
@@ -40,21 +38,23 @@ Observação: Você precisará abrir 5 abas do terminal/PowerShell
 2. Após iniciado o servidor no passo anterior, vamos abrir um cliente/aba do terminal para cada jogador. Em cada terminal vamos digitar: ```java Cliente.java```
 3. Após isso o jogo irá pedir a confirmação de todos os jogadores para poder começar a partida
 
-# Como Jogar
-## Início do Jogo:
+# Detalhes do Jogo
+## Início:
 
-Ao iniciar o jogo, você verá uma mensagem de boas-vindas e instruções básicas.
+Ao entrar no jogo, você verá mensagens de boas-vindas e de espera por outros jogadores. Para que a partida inicie, são necessários 4 jogadores e suas respectivas confirmações.
 
 ## Rodadas:
 Em cada rodada, o jogador da vez digita ```y``` e rola um dado virtual.
 
 A pontuação total é acumulada ao longo das rodadas.
 
-# Objetivo:
+## Objetivo:
 
-O objetivo é obter a maior pontuação possível em um número 3 rodadas
+O objetivo é obter a maior pontuação com a soma dos dados após 3 rodadas.
 
-# Final do Jogo:
+**Obs:** Caso haja empate, o critério de desempate se dará pelo jogador que rolou o dado primeiro.
+
+## Final do Jogo:
 
 Após todas as rodadas, o jogo exibe a pontuação final e informa o se o jogador ganhou ou perdeu.
 

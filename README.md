@@ -30,13 +30,10 @@ Navegue até a pasta do projeto:
 
 Execute o jogo:
 - Abra o terminal na pasta citada acima<br>
-Windows: Para abrir o terminal na pasta no caso o PowerShell, clica shift e o botão direito do mouse, depois clica em "Abrir janela do PowerShell aqui".<br>
 
-Observação: Você precisará abrir 5 abas do terminal/PowerShell
-
-1. Ao abrir o primeiro terminal digite: ```java Servidor.java```
-2. Após iniciado o servidor no passo anterior, vamos abrir um cliente/aba do terminal para cada jogador. Em cada terminal vamos digitar: ```java Cliente.java```
-3. Após isso o jogo irá pedir a confirmação de todos os jogadores para poder começar a partida
+  Na pasta raiz do projeto: unidade:\Projects_Eclipse\Projredes 
+  damos o comando: <b>```java -cp bin jogo.Servidor```</b> (para abrir o servidor)
+  e para abrir os clientes em terminais novos:  unidade:\Projects_Eclipse\Projredes <b>```java -cp bin jogo.Cliente```</b><br>
 
 # Detalhes do Jogo
 ## Início:

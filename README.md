@@ -29,11 +29,12 @@ Navegue até a pasta do projeto:
   <pre><font color="#12488B"><b>Projredes/src/jogo</b></font></pre>
 
 Execute o jogo:
-- Você vai abrir o terminal.<br>
 
-  Na pasta raiz do projeto: unidade:\Projects_Eclipse\Projredes 
-  damos o comando: <b>```java -cp bin jogo.Servidor```</b> (para abrir o servidor)
-  e para abrir os clientes em terminais novos:  unidade:\Projects_Eclipse\Projredes <b>```java -cp bin jogo.Cliente```</b><br>
+- Abra o terminal na pasta citada acima.<br>
+
+  Na pasta em que você clonou o projeto: <b>C:\diretorio\Projredes</b>
+  damos o comando: ```java -cp bin jogo.Servidor``` (para abrir o servidor)
+  e para abrir os clientes em terminais novos:  <b>C:\diretorio\Projredes ```java -cp bin jogo.Cliente```</b><br>
 
 # Detalhes do Jogo
 ## Início:

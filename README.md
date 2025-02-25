@@ -31,8 +31,14 @@ Navegue até a pasta do projeto:
   <pre><font color="#12488B"><b>Projredes/src/jogo</b></font></pre>
 
 Execute o jogo:
-- Abra o terminal <br>
-Para abrir o terminal na pasta no caso o powershell, clica shift e o botão direito do mouse, depois clica em abrir powershell.<br>
+- Abra o terminal na pasta citada acima<br>
+Windows: Para abrir o terminal na pasta no caso o PowerShell, clica shift e o botão direito do mouse, depois clica em "Abrir janela do PowerShell aqui".<br>
+
+Observação: Você precisará abrir 5 abas do terminal/PowerShell
+
+1. Ao abrir o primeiro terminal digite: ```java Servidor.java```
+2. Após iniciado o servidor no passo anterior, vamos abrir um cliente/aba do terminal para cada jogador. Em cada terminal vamos digitar: ```java Cliente.java```
+3. Após isso o jogo irá pedir a confirmação de todos os jogadores para poder começar a partida
 
 # Como Jogar
 ## Início do Jogo:
@@ -40,10 +46,9 @@ Para abrir o terminal na pasta no caso o powershell, clica shift e o botão dire
 Ao iniciar o jogo, você verá uma mensagem de boas-vindas e instruções básicas.
 
 ## Rodadas:
-Em cada rodada, o jogador rola um dado virtual.
+Em cada rodada, o jogador da vez digita ```y``` e rola um dado virtual.
 
 A pontuação total é acumulada ao longo das rodadas.
-
 
 # Objetivo:
 
@@ -53,5 +58,5 @@ O objetivo é obter a maior pontuação possível em um número 3 rodadas
 
 Após todas as rodadas, o jogo exibe a pontuação final e informa o se o jogador ganhou ou perdeu.
 
-O jogador pode decidir jogar novamente ou encerrar o jogo.
+O jogador pode decidir jogar novamente ou sair do jogo.
 

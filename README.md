@@ -11,12 +11,12 @@
   
 ## Descrição do Jogo
 
-Dado de Somar é um jogo simples onde os jogadores rolam dados virtuais e somam os valores obtidos buscando alcançar a maior pontuação possível em um número limitado de rodadas. 
+Dado de Somar é um jogo simples onde os jogadores rolam dados virtuais e somam os valores obtidos buscando alcançar a maior pontuação possível em um número limitado de rodadas. Ganha aquele que obtive primeiro o maior valor da soma.
 
 # Como Executar o Projeto
 
 ## Pré-requisitos
-Java instalado no seu computador.
+Java JDK instalado no seu computador.
 
 ## Passos para Executar
 
@@ -26,15 +26,32 @@ Clone o repositório:
    
 Navegue até a pasta do projeto:
 
-  <pre><font color="#12488B"><b>Projredes/src/jogo</b></font></pre>
+  <pre><font color="#12488B"><b>Ex.: C:\Projredes</b></font></pre>
 
 Execute o jogo:
 
 - Abra o terminal na pasta citada acima.<br>
+- Verifique se você possui o jdk instalado:
+ <pre><font color="#12488B"><b>java -version</b></font></pre> 
+ - Caso não, faça o download da versão compativel com seu sistema e instale no link:
+ <pre><font color="#12488B"><b>https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html</b></font></pre>
+ <br>
+ Após os passos anteriores, vamos continuar com o processo de execução:
+ <br>
 
-  Na pasta em que você clonou o projeto: <b>C:\diretorio\Projredes</b>
-  damos o comando: ```java -cp bin jogo.Servidor``` (para abrir o servidor)
-  e para abrir os clientes em terminais novos:  <b>C:\diretorio\Projredes ```java -cp bin jogo.Cliente```</b><br>
+  - Na pasta em que você clonou o projeto: 
+  <pre><font color="#12488B"><b>Ex.: C:\Projredes</b></font></pre>
+  - Vamos executar o seguinte comando no terminal:
+  <pre><font color="#12488B"><b>javac src/jogo/*.java</b></font></pre>
+  - Após esse passo, vamos abrir o servidor do jogo. No terminal digitamos o seguinte comando:
+  <pre><font color="#12488B"><b>java -cp src jogo.Servidor</b></font></pre>
+  <br>
+  Para abrir o cliente para os jogadores, faremos os seguintes passos:
+  <br>
+  - Vamos abrir o terminal na pasta raiz do projeto, e no terminal digitamos o seguinte comando:
+  <pre><font color="#12488B"><b>java -cp src jogo.Cliente</b></font></pre>
+  Obs.: Para cada cliente, devemos abrir um novo terminal. Não devemos fechar o terminal do servidor, nem os dos outros jogadores.
+  
 
 # Detalhes do Jogo
 ## Início:
@@ -56,5 +73,5 @@ O objetivo é obter a maior pontuação com a soma dos dados após 3 rodadas.
 
 Após todas as rodadas, o jogo exibe a pontuação final e informa o se o jogador ganhou ou perdeu.
 
-O jogador pode decidir jogar novamente ou sair do jogo.
+O jogo também pergunta se o jogador deseja jogar novamente ou sair do jogo.
 

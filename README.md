@@ -29,7 +29,7 @@ Navegue até a pasta do projeto:
   <pre><font color="#12488B"><b>Projredes/src/jogo</b></font></pre>
 
 Execute o jogo:
-- Abra o terminal na pasta citada acima<br>
+- Você vai abrir o terminal.<br>
 
   Na pasta raiz do projeto: unidade:\Projects_Eclipse\Projredes 
   damos o comando: <b>```java -cp bin jogo.Servidor```</b> (para abrir o servidor)

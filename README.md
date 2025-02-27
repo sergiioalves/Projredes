@@ -5,9 +5,9 @@
 </div>
 
 ## Integrantes do grupo
-- Sérgio
-- Denilson
-- Lindembergson
+- Sérgio Emmanuel Alves
+- Denilson da Silva Pereira
+- Lindembergson Carlos Monteiro Moreno
   
 ## Descrição do Jogo
 
